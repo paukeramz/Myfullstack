@@ -3,17 +3,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 import * as cors from 'cors';
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres', // Change to your PostgreSQL username
-      password: 'postgres', // Change to your PostgreSQL password
-      database: 'postgres', // Ensure that the 'todo_db' exists
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME, 
+      password: process.env.DB_PASSWORD, 
+      database: process.env.DB_DATABASE, 
       entities: [User],
-      synchronize: true, // Automatically sync entities to database, don't use in production
+      schema:process.env.DB_SCHEMA,
+      synchronize: true, 
     }),
     UserModule,
   ],
@@ -22,7 +25,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(
       cors({
-        origin: 'http://localhost:3000',
+        origin: process.env.FRONTEND_URL,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true,
       }),

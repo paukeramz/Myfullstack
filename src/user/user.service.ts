@@ -22,10 +22,9 @@ export class UserService {
   async remove(id: number): Promise<void> {
     await this.usersRepository.delete(id);
   }
-  async createUser(userData: CreateUserDto): Promise<User> {
-    
-    const newUser = this.usersRepository.create(userData);
-    return await this.usersRepository.save(newUser);
+  async createUser(createUserDto: CreateUserDto) {
+    const user = this.usersRepository.create(createUserDto);
+    return this.usersRepository.save(user);
   }
 
   async updateUser(id: number, userData: UpdateUserDto): Promise<User> {
